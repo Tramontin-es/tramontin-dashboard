@@ -254,19 +254,28 @@
   }
 
   async function concludeEvent(id) {
-    try {
-      await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: id, status: 'Concluído', method: 'put' })
-      });
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id, status: 'Concluído', method: 'put' })
+    });
+
+    const result = await response.json();
+
+    if (result.result === "Success") {
       alert('Evento concluído com sucesso!');
       loadEvents();
-    } catch (error) {
-      console.error('Erro ao concluir evento:', error);
-      alert('Erro ao concluir evento.');
+    } else {
+      console.error('Erro ao concluir evento:', result.mensagem);
+      alert('Erro ao concluir evento: ' + (result.mensagem || 'Erro desconhecido.'));
     }
+
+  } catch (error) {
+    console.error('Erro ao concluir evento:', error);
+    alert('Erro ao concluir evento.');
   }
+}
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
