@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agenda Pessoal - Tramontin</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -59,18 +60,9 @@
       font-size: 0.8em;
       margin-top: 10px;
     }
-    .status.Pendente {
-      background: #fde68a;
-      color: #92400e;
-    }
-    .status.Concluído {
-      background: #bbf7d0;
-      color: #166534;
-    }
-    .status.Cancelado {
-      background: #fecaca;
-      color: #991b1b;
-    }
+    .status.Pendente { background: #fde68a; color: #92400e; }
+    .status.Concluído { background: #bbf7d0; color: #166534; }
+    .status.Cancelado { background: #fecaca; color: #991b1b; }
     .btn, #openModalBtn {
       display: block;
       width: 200px;
@@ -144,7 +136,7 @@
     <h2 style="text-align:center; color:#4f46e5;">Adicionar Novo Evento</h2>
     <form id="eventForm">
       <input type="text" id="titulo" placeholder="Título*" required>
-      <input type="text" id="data" placeholder="Data (DD/MM/AAAA)*" required maxlength="10">
+      <input type="text" id="data" placeholder="Data (DD/MM/AAAA)*" required>
       <input type="time" id="hora" required>
       <select id="categoria">
         <option value="">Categoria</option>
@@ -182,45 +174,27 @@
 
 <a href="index.html" class="btn">⬅️ Voltar para o Dashboard</a>
 
-<div class="cards">
-  <div class="card">
-    <h2>Treino na academia</h2>
-    <div class="info"><span class="material-icons">event</span> 28/04/2025</div>
-    <div class="info"><span class="material-icons">schedule</span> 07:00</div>
-    <div class="info"><span class="material-icons">category</span> Saúde</div>
-    <div class="info"><span class="material-icons">priority_high</span> Alta</div>
-    <div class="info"><span class="material-icons">location_on</span> SmartFit Centro</div>
-    <div class="description">Treino de costas e pernas.</div>
-    <span class="status Pendente">Pendente</span>
-  </div>
-</div>
+<div class="cards" id="cards"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
   const openModalBtn = document.getElementById('openModalBtn');
   const closeModalBtn = document.getElementById('closeModalBtn');
   const eventModal = document.getElementById('eventModal');
-
-  openModalBtn.addEventListener('click', () => {
-    eventModal.style.display = 'flex';
-  });
-  closeModalBtn.addEventListener('click', () => {
-    eventModal.style.display = 'none';
-  });
-  window.addEventListener('click', (e) => {
-    if (e.target === eventModal) {
-      eventModal.style.display = 'none';
-    }
-  });
-
-  // Máscara de Data (DD/MM/YYYY)
-  document.getElementById('data').addEventListener('input', (e) => {
-    let v = e.target.value.replace(/\D/g, '');
-    if (v.length >= 2) v = v.slice(0,2) + '/' + v.slice(2);
-    if (v.length >= 5) v = v.slice(0,5) + '/' + v.slice(5,9);
-    e.target.value = v.slice(0,10);
-  });
-
+  const cardsContainer = document.getElementById('cards');
   const form = document.getElementById('eventForm');
+
+  openModalBtn.addEventListener('click', () => eventModal.style.display = 'flex');
+  closeModalBtn.addEventListener('click', () => eventModal.style.display = 'none');
+  window.addEventListener('click', (e) => { if (e.target === eventModal) eventModal.style.display = 'none'; });
+
+  flatpickr("#data", {
+    dateFormat: "d/m/Y",
+    altInput: true,
+    altFormat: "d/m/Y",
+    locale: "pt"
+  });
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = {
@@ -234,12 +208,10 @@
       local: document.getElementById('local').value.trim(),
       observacoes: document.getElementById('observacoes').value.trim()
     };
-
     if (!data.titulo || !data.data || !data.hora || !data.status) {
       alert("Por favor, preencha os campos obrigatórios.");
       return;
     }
-
     try {
       await fetch('https://script.google.com/macros/s/AKfycbwIvh_tZxyo6WZVa_UDp0Zb9C_ikQ9gdAWkqYICOKyZvXf62QMk7G7MFYHEVkokfZDR/exec', {
         method: 'POST',
@@ -247,8 +219,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-
       alert('Evento adicionado com sucesso! ✅');
+      addCard(data);
       eventModal.style.display = 'none';
       form.reset();
     } catch (error) {
@@ -256,6 +228,22 @@
       alert('Erro ao adicionar evento.');
     }
   });
+
+  function addCard(event) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <h2>${event.titulo}</h2>
+      <div class="info"><span class="material-icons">event</span> ${event.data}</div>
+      <div class="info"><span class="material-icons">schedule</span> ${event.hora}</div>
+      <div class="info"><span class="material-icons">category</span> ${event.categoria || '-'}</div>
+      <div class="info"><span class="material-icons">priority_high</span> ${event.prioridade || '-'}</div>
+      <div class="info"><span class="material-icons">location_on</span> ${event.local || '-'}</div>
+      <div class="description">${event.observacoes || 'Sem observações.'}</div>
+      <span class="status ${event.status}">${event.status}</span>
+    `;
+    cardsContainer.prepend(card);
+  }
 </script>
 
 </body>
