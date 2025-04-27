@@ -32,6 +32,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      transition: 0.3s;
     }
     .card h2 {
       font-size: 1.3em;
@@ -85,7 +86,6 @@
       background: rgba(0,0,0,0.5);
       justify-content: center;
       align-items: center;
-      animation: fadeIn 0.3s ease;
     }
     #eventModal .modal-content {
       background: white;
@@ -96,10 +96,9 @@
       max-height: 90vh;
       overflow-y: auto;
       position: relative;
-      animation: slideDown 0.4s ease;
+      animation: fadeIn 0.4s;
     }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     input, select, textarea {
       width: 100%;
       padding: 10px;
@@ -122,11 +121,23 @@
       background: #f87171;
       color: white;
     }
+    .conclude-btn {
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+    .conclude-btn:hover {
+      background: #059669;
+    }
   </style>
 </head>
 
 <body>
-
 <h1>Agenda Pessoal</h1>
 
 <button id="openModalBtn">+ Novo Evento</button>
@@ -175,7 +186,6 @@
 <a href="index.html" class="btn">⬅️ Voltar para o Dashboard</a>
 
 <div class="cards" id="cards"></div>
-
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
   const openModalBtn = document.getElementById('openModalBtn');
@@ -184,10 +194,12 @@
   const cardsContainer = document.getElementById('cards');
   const form = document.getElementById('eventForm');
 
+  // Abrir e fechar modal
   openModalBtn.addEventListener('click', () => eventModal.style.display = 'flex');
   closeModalBtn.addEventListener('click', () => eventModal.style.display = 'none');
   window.addEventListener('click', (e) => { if (e.target === eventModal) eventModal.style.display = 'none'; });
 
+  // Configurar Flatpickr
   flatpickr("#data", {
     dateFormat: "d/m/Y",
     altInput: true,
@@ -195,6 +207,55 @@
     locale: "pt"
   });
 
+  // LocalStorage Helpers
+  function saveEvents(events) {
+    localStorage.setItem('tramontinEvents', JSON.stringify(events));
+  }
+
+  function loadEvents() {
+    const events = localStorage.getItem('tramontinEvents');
+    return events ? JSON.parse(events) : [];
+  }
+
+  function addCard(event, save = true) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <h2>${event.titulo}</h2>
+      <div class="info"><span class="material-icons">event</span> ${event.data}</div>
+      <div class="info"><span class="material-icons">schedule</span> ${event.hora}</div>
+      <div class="info"><span class="material-icons">category</span> ${event.categoria || '-'}</div>
+      <div class="info"><span class="material-icons">priority_high</span> ${event.prioridade || '-'}</div>
+      <div class="info"><span class="material-icons">location_on</span> ${event.local || '-'}</div>
+      <div class="description">${event.observacoes || 'Sem observações.'}</div>
+      <span class="status ${event.status}">${event.status}</span>
+      <button class="conclude-btn">✔️ Concluir</button>
+    `;
+
+    // Botão de concluir
+    card.querySelector('.conclude-btn').addEventListener('click', () => {
+      event.status = "Concluído";
+      saveEvents(eventsList);
+      renderCards();
+    });
+
+    cardsContainer.prepend(card);
+
+    if (save) {
+      eventsList.push(event);
+      saveEvents(eventsList);
+    }
+  }
+
+  function renderCards() {
+    cardsContainer.innerHTML = '';
+    eventsList.forEach(event => addCard(event, false));
+  }
+
+  const eventsList = loadEvents();
+  renderCards();
+
+  // Enviar novo evento
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = {
@@ -208,10 +269,12 @@
       local: document.getElementById('local').value.trim(),
       observacoes: document.getElementById('observacoes').value.trim()
     };
+
     if (!data.titulo || !data.data || !data.hora || !data.status) {
       alert("Por favor, preencha os campos obrigatórios.");
       return;
     }
+
     try {
       await fetch('https://script.google.com/macros/s/AKfycbwIvh_tZxyo6WZVa_UDp0Zb9C_ikQ9gdAWkqYICOKyZvXf62QMk7G7MFYHEVkokfZDR/exec', {
         method: 'POST',
@@ -219,6 +282,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
+
       alert('Evento adicionado com sucesso! ✅');
       addCard(data);
       eventModal.style.display = 'none';
@@ -228,22 +292,6 @@
       alert('Erro ao adicionar evento.');
     }
   });
-
-  function addCard(event) {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <h2>${event.titulo}</h2>
-      <div class="info"><span class="material-icons">event</span> ${event.data}</div>
-      <div class="info"><span class="material-icons">schedule</span> ${event.hora}</div>
-      <div class="info"><span class="material-icons">category</span> ${event.categoria || '-'}</div>
-      <div class="info"><span class="material-icons">priority_high</span> ${event.prioridade || '-'}</div>
-      <div class="info"><span class="material-icons">location_on</span> ${event.local || '-'}</div>
-      <div class="description">${event.observacoes || 'Sem observações.'}</div>
-      <span class="status ${event.status}">${event.status}</span>
-    `;
-    cardsContainer.prepend(card);
-  }
 </script>
 
 </body>
