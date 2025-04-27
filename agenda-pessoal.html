@@ -174,7 +174,6 @@
     eventModal.style.display = 'none';
   });
 
-  // Fechar ao clicar fora do modal
   window.addEventListener('click', (e) => {
     if (e.target === eventModal) {
       eventModal.style.display = 'none';
@@ -190,7 +189,7 @@
 
     const data = {
       titulo: document.getElementById('titulo').value.trim(),
-      descricao: document.getElementById('descricao') ? document.getElementById('descricao').value.trim() : "",
+      descricao: "",
       data: document.getElementById('data').value.trim(),
       hora: document.getElementById('hora').value.trim(),
       categoria: document.getElementById('categoria').value.trim(),
