@@ -13,19 +13,16 @@
       background: #f5f7fa;
       color: #333;
     }
-
     h1 {
       text-align: center;
       color: #4f46e5;
       margin-bottom: 20px;
     }
-
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
     }
-
     .card {
       background: #fff;
       padding: 20px;
@@ -35,12 +32,10 @@
       flex-direction: column;
       justify-content: space-between;
     }
-
     .card h2 {
       font-size: 1.3em;
       margin-bottom: 10px;
     }
-
     .info {
       display: flex;
       align-items: center;
@@ -48,18 +43,15 @@
       font-size: 0.9em;
       margin-bottom: 8px;
     }
-
     .material-icons {
       font-size: 1em;
       color: #6366f1;
     }
-
     .description {
       font-size: 0.9em;
       margin: 10px 0;
       color: #555;
     }
-
     .status {
       display: inline-block;
       padding: 4px 8px;
@@ -67,23 +59,19 @@
       font-size: 0.8em;
       margin-top: 10px;
     }
-
     .status.Pendente {
       background: #fde68a;
       color: #92400e;
     }
-
     .status.Concluído {
       background: #bbf7d0;
       color: #166534;
     }
-
     .status.Cancelado {
       background: #fecaca;
       color: #991b1b;
     }
-
-    .btn {
+    .btn, #openModalBtn {
       display: block;
       width: 200px;
       margin: 20px auto;
@@ -93,6 +81,54 @@
       color: white;
       border-radius: 30px;
       text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    #eventModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease;
+    }
+    #eventModal .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: slideDown 0.4s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button[type="submit"], #closeModalBtn {
+      padding: 10px 20px;
+      margin: 10px 5px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    button[type="submit"] {
+      background: #6366f1;
+      color: white;
+    }
+    #closeModalBtn {
+      background: #f87171;
+      color: white;
     }
   </style>
 </head>
@@ -101,35 +137,44 @@
 
 <h1>Agenda Pessoal</h1>
 
-<button id="openModalBtn" style="display: block; margin: 0 auto 20px; padding: 12px 20px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: none; border-radius: 30px; font-size: 1em; cursor: pointer;">
-  + Novo Evento
-</button>
+<button id="openModalBtn">+ Novo Evento</button>
 
-<div id="eventModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
-  <div style="background:white; padding:20px; border-radius:10px; max-width:500px; width:90%; position:relative;">
+<div id="eventModal">
+  <div class="modal-content">
     <h2 style="text-align:center; color:#4f46e5;">Adicionar Novo Evento</h2>
     <form id="eventForm">
-      <input type="text" id="titulo" placeholder="Título*" required style="width:100%; padding:10px; margin:10px 0;">
-      <input type="date" id="data" required style="width:100%; padding:10px; margin:10px 0;">
-      <input type="time" id="hora" required style="width:100%; padding:10px; margin:10px 0;">
-      <input type="text" id="categoria" placeholder="Categoria" style="width:100%; padding:10px; margin:10px 0;">
-      <select id="prioridade" style="width:100%; padding:10px; margin:10px 0;">
+      <input type="text" id="titulo" placeholder="Título*" required>
+      <input type="text" id="data" placeholder="Data (DD/MM/AAAA)*" required maxlength="10">
+      <input type="time" id="hora" required>
+      <select id="categoria">
+        <option value="">Categoria</option>
+        <option value="Trabalho">Trabalho</option>
+        <option value="Saúde">Saúde</option>
+        <option value="Família">Família</option>
+        <option value="Eventos">Eventos</option>
+        <option value="Estudos">Estudos</option>
+        <option value="Viagens">Viagens</option>
+        <option value="Finanças">Finanças</option>
+        <option value="Confraria">Confraria</option>
+        <option value="Lollapalúpulo">Lollapalúpulo</option>
+      </select>
+      <select id="prioridade">
         <option value="">Prioridade</option>
         <option value="Alta">Alta</option>
         <option value="Média">Média</option>
         <option value="Baixa">Baixa</option>
       </select>
-      <select id="status" required style="width:100%; padding:10px; margin:10px 0;">
+      <select id="status" required>
         <option value="">Status*</option>
         <option value="Pendente">Pendente</option>
         <option value="Concluído">Concluído</option>
         <option value="Cancelado">Cancelado</option>
       </select>
-      <input type="text" id="local" placeholder="Local" style="width:100%; padding:10px; margin:10px 0;">
-      <textarea id="observacoes" placeholder="Observações" style="width:100%; padding:10px; margin:10px 0; height:80px;"></textarea>
+      <input type="text" id="local" placeholder="Local">
+      <textarea id="observacoes" placeholder="Observações"></textarea>
       <div style="text-align:center; margin-top:15px;">
-        <button type="submit" style="padding:10px 20px; background:#6366f1; color:white; border:none; border-radius:20px; cursor:pointer;">Salvar Evento</button>
-        <button type="button" id="closeModalBtn" style="padding:10px 20px; background:#f87171; color:white; border:none; border-radius:20px; cursor:pointer; margin-left:10px;">Cancelar</button>
+        <button type="submit">Salvar Evento</button>
+        <button type="button" id="closeModalBtn">Cancelar</button>
       </div>
     </form>
   </div>
@@ -148,17 +193,6 @@
     <div class="description">Treino de costas e pernas.</div>
     <span class="status Pendente">Pendente</span>
   </div>
-
-  <div class="card">
-    <h2>Reunião de trabalho</h2>
-    <div class="info"><span class="material-icons">event</span> 29/04/2025</div>
-    <div class="info"><span class="material-icons">schedule</span> 14:00</div>
-    <div class="info"><span class="material-icons">category</span> Trabalho</div>
-    <div class="info"><span class="material-icons">priority_high</span> Normal</div>
-    <div class="info"><span class="material-icons">location_on</span> Escritório</div>
-    <div class="description">Apresentação dos resultados do mês.</div>
-    <span class="status Concluído">Concluído</span>
-  </div>
 </div>
 
 <script>
@@ -169,24 +203,26 @@
   openModalBtn.addEventListener('click', () => {
     eventModal.style.display = 'flex';
   });
-
   closeModalBtn.addEventListener('click', () => {
     eventModal.style.display = 'none';
   });
-
   window.addEventListener('click', (e) => {
     if (e.target === eventModal) {
       eventModal.style.display = 'none';
     }
   });
-</script>
 
-<script>
+  // Máscara de Data (DD/MM/YYYY)
+  document.getElementById('data').addEventListener('input', (e) => {
+    let v = e.target.value.replace(/\D/g, '');
+    if (v.length >= 2) v = v.slice(0,2) + '/' + v.slice(2);
+    if (v.length >= 5) v = v.slice(0,5) + '/' + v.slice(5,9);
+    e.target.value = v.slice(0,10);
+  });
+
   const form = document.getElementById('eventForm');
-
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const data = {
       titulo: document.getElementById('titulo').value.trim(),
       descricao: "",
@@ -200,17 +236,15 @@
     };
 
     if (!data.titulo || !data.data || !data.hora || !data.status) {
-      alert("Por favor, preencha os campos obrigatórios (Título, Data, Hora e Status).");
+      alert("Por favor, preencha os campos obrigatórios.");
       return;
     }
 
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbwIvh_tZxyo6WZVa_UDp0Zb9C_ikQ9gdAWkqYICOKyZvXf62QMk7G7MFYHEVkokfZDR/exec', {
+      await fetch('https://script.google.com/macros/s/AKfycbwIvh_tZxyo6WZVa_UDp0Zb9C_ikQ9gdAWkqYICOKyZvXf62QMk7G7MFYHEVkokfZDR/exec', {
         method: 'POST',
         mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
 
@@ -219,7 +253,7 @@
       form.reset();
     } catch (error) {
       console.error('Erro ao enviar evento:', error);
-      alert('Ocorreu um erro ao adicionar o evento. Tente novamente.');
+      alert('Erro ao adicionar evento.');
     }
   });
 </script>
