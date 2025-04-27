@@ -258,7 +258,7 @@
       await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: id, status: 'Concluído' })
+        body: JSON.stringify({ id: id, status: 'Concluído', method: 'put' })
       });
       alert('Evento concluído com sucesso!');
       loadEvents();
@@ -304,7 +304,7 @@
     }
   });
 
-  loadEvents(); // Carrega eventos quando a página abre
+  loadEvents();
 </script>
 
 </body>
