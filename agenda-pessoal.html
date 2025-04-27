@@ -96,9 +96,7 @@
       max-height: 90vh;
       overflow-y: auto;
       position: relative;
-      animation: fadeIn 0.4s;
     }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     input, select, textarea {
       width: 100%;
       padding: 10px;
@@ -138,6 +136,7 @@
 </head>
 
 <body>
+
 <h1>Agenda Pessoal</h1>
 
 <button id="openModalBtn">+ Novo Evento</button>
@@ -186,6 +185,7 @@
 <a href="index.html" class="btn">⬅️ Voltar para o Dashboard</a>
 
 <div class="cards" id="cards"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
   const openModalBtn = document.getElementById('openModalBtn');
@@ -226,7 +226,7 @@
       return;
     }
 
-    events.sort((a, b) => new Date(a.data.split('/').reverse().join('/')) - new Date(b.data.split('/').reverse().join('/')));
+    events.sort((a, b) => new Date(a.Data.split('/').reverse().join('/')) - new Date(b.Data.split('/').reverse().join('/')));
 
     events.forEach(event => {
       const card = document.createElement('div');
@@ -245,7 +245,6 @@
       cardsContainer.appendChild(card);
     });
 
-    // Ativar botão concluir
     document.querySelectorAll('.conclude-btn').forEach(button => {
       button.addEventListener('click', async () => {
         const id = button.getAttribute('data-id');
@@ -257,9 +256,9 @@
   async function concludeEvent(id) {
     try {
       await fetch(apiUrl, {
-        method: 'POST', // nosso doPut também responde ao POST com "method=put"
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: id, status: 'Concluído', method: 'put' })
+        body: JSON.stringify({ id: id, status: 'Concluído' })
       });
       alert('Evento concluído com sucesso!');
       loadEvents();
@@ -305,9 +304,8 @@
     }
   });
 
-  loadEvents(); // Carrega eventos assim que a página abrir
+  loadEvents(); // Carrega eventos quando a página abre
 </script>
 
 </body>
 </html>
-
