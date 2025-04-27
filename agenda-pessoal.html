@@ -180,6 +180,7 @@
       eventModal.style.display = 'none';
     }
   });
+</script>
 
 <script>
   const form = document.getElementById('eventForm');
@@ -217,7 +218,6 @@
       alert('Evento adicionado com sucesso! ✅');
       eventModal.style.display = 'none';
       form.reset();
-      // Aqui futuramente podemos atualizar a lista sem precisar dar refresh
     } catch (error) {
       console.error('Erro ao enviar evento:', error);
       alert('Ocorreu um erro ao adicionar o evento. Tente novamente.');
