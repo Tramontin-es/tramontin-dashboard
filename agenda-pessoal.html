@@ -289,11 +289,11 @@
 
     try {
       await fetch(apiUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(data)
+});
+
       alert('Evento adicionado com sucesso! ✅');
       eventModal.style.display = 'none';
       form.reset();
