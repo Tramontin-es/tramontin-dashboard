@@ -297,15 +297,22 @@
     }
 
     try {
-      await fetch(apiUrl, {
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      alert('Evento adicionado com sucesso! ✅');
-      eventModal.style.display = 'none';
-      form.reset();
-      loadEvents();
+      const result = await response.json();
+
+      if (result.result === "Success") {
+        alert('Evento adicionado com sucesso! ✅');
+        eventModal.style.display = 'none';
+        form.reset();
+        loadEvents();
+      } else {
+        console.error('Erro ao adicionar evento:', result.message || result);
+        alert('Erro ao adicionar evento.');
+      }
     } catch (error) {
       console.error('Erro ao enviar evento:', error);
       alert('Erro ao adicionar evento.');
@@ -317,3 +324,4 @@
 
 </body>
 </html>
+
