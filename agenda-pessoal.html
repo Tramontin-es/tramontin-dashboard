@@ -194,12 +194,12 @@
   const cardsContainer = document.getElementById('cards');
   const form = document.getElementById('eventForm');
 
-  // Abrir e fechar modal
+  const apiUrl = 'https://script.google.com/macros/s/AKfycbyVrC45jXp32s4YvLSGI-nN7XwJUvTGfT8x8HhR9snn6XOsJRl2jmw6jI2Ngr1yxLMH/exec';
+
   openModalBtn.addEventListener('click', () => eventModal.style.display = 'flex');
   closeModalBtn.addEventListener('click', () => eventModal.style.display = 'none');
   window.addEventListener('click', (e) => { if (e.target === eventModal) eventModal.style.display = 'none'; });
 
-  // Configurar Flatpickr
   flatpickr("#data", {
     dateFormat: "d/m/Y",
     altInput: true,
@@ -207,55 +207,68 @@
     locale: "pt"
   });
 
-  // LocalStorage Helpers
-  function saveEvents(events) {
-    localStorage.setItem('tramontinEvents', JSON.stringify(events));
-  }
-
-  function loadEvents() {
-    const events = localStorage.getItem('tramontinEvents');
-    return events ? JSON.parse(events) : [];
-  }
-
-  function addCard(event, save = true) {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <h2>${event.titulo}</h2>
-      <div class="info"><span class="material-icons">event</span> ${event.data}</div>
-      <div class="info"><span class="material-icons">schedule</span> ${event.hora}</div>
-      <div class="info"><span class="material-icons">category</span> ${event.categoria || '-'}</div>
-      <div class="info"><span class="material-icons">priority_high</span> ${event.prioridade || '-'}</div>
-      <div class="info"><span class="material-icons">location_on</span> ${event.local || '-'}</div>
-      <div class="description">${event.observacoes || 'Sem observações.'}</div>
-      <span class="status ${event.status}">${event.status}</span>
-      <button class="conclude-btn">✔️ Concluir</button>
-    `;
-
-    // Botão de concluir
-    card.querySelector('.conclude-btn').addEventListener('click', () => {
-      event.status = "Concluído";
-      saveEvents(eventsList);
-      renderCards();
-    });
-
-    cardsContainer.prepend(card);
-
-    if (save) {
-      eventsList.push(event);
-      saveEvents(eventsList);
+  async function loadEvents() {
+    cardsContainer.innerHTML = '<p style="text-align:center;">Carregando eventos...</p>';
+    try {
+      const response = await fetch(apiUrl);
+      const events = await response.json();
+      renderCards(events);
+    } catch (error) {
+      console.error('Erro ao carregar eventos:', error);
+      cardsContainer.innerHTML = '<p style="text-align:center; color:red;">Erro ao carregar eventos.</p>';
     }
   }
 
-  function renderCards() {
+  function renderCards(events) {
     cardsContainer.innerHTML = '';
-    eventsList.forEach(event => addCard(event, false));
+    if (events.length === 0) {
+      cardsContainer.innerHTML = '<p style="text-align:center;">Nenhum evento encontrado.</p>';
+      return;
+    }
+
+    events.sort((a, b) => new Date(a.data.split('/').reverse().join('/')) - new Date(b.data.split('/').reverse().join('/')));
+
+    events.forEach(event => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h2>${event.Título}</h2>
+        <div class="info"><span class="material-icons">event</span> ${event.Data}</div>
+        <div class="info"><span class="material-icons">schedule</span> ${event.Hora}</div>
+        <div class="info"><span class="material-icons">category</span> ${event.Categoria || '-'}</div>
+        <div class="info"><span class="material-icons">priority_high</span> ${event.Prioridade || '-'}</div>
+        <div class="info"><span class="material-icons">location_on</span> ${event.Local || '-'}</div>
+        <div class="description">${event.Observações || 'Sem observações.'}</div>
+        <span class="status ${event.Status}">${event.Status}</span>
+        ${event.Status === 'Pendente' ? `<button class="conclude-btn" data-id="${event.ID}">✔️ Concluir</button>` : ''}
+      `;
+      cardsContainer.appendChild(card);
+    });
+
+    // Ativar botão concluir
+    document.querySelectorAll('.conclude-btn').forEach(button => {
+      button.addEventListener('click', async () => {
+        const id = button.getAttribute('data-id');
+        await concludeEvent(id);
+      });
+    });
   }
 
-  const eventsList = loadEvents();
-  renderCards();
+  async function concludeEvent(id) {
+    try {
+      await fetch(apiUrl, {
+        method: 'POST', // nosso doPut também responde ao POST com "method=put"
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id, status: 'Concluído', method: 'put' })
+      });
+      alert('Evento concluído com sucesso!');
+      loadEvents();
+    } catch (error) {
+      console.error('Erro ao concluir evento:', error);
+      alert('Erro ao concluir evento.');
+    }
+  }
 
-  // Enviar novo evento
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = {
@@ -276,23 +289,25 @@
     }
 
     try {
-      await fetch('https://script.google.com/macros/s/AKfycbwIvh_tZxyo6WZVa_UDp0Zb9C_ikQ9gdAWkqYICOKyZvXf62QMk7G7MFYHEVkokfZDR/exec', {
+      await fetch(apiUrl, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-
       alert('Evento adicionado com sucesso! ✅');
-      addCard(data);
       eventModal.style.display = 'none';
       form.reset();
+      loadEvents();
     } catch (error) {
       console.error('Erro ao enviar evento:', error);
       alert('Erro ao adicionar evento.');
     }
   });
+
+  loadEvents(); // Carrega eventos assim que a página abrir
 </script>
 
 </body>
 </html>
+
