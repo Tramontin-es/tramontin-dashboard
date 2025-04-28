@@ -194,7 +194,6 @@
   const cardsContainer = document.getElementById('cards');
   const form = document.getElementById('eventForm');
 
-  // Atualize para seu novo link de API:
   const apiUrl = 'https://script.google.com/macros/s/AKfycbzJT6ynjtS3dOxeV8mMJfTAvHiLoAljgXD99DRqCv40XdxfBfHCgwh_x-c9bIXSNV0F/exec';
 
   openModalBtn.addEventListener('click', () => eventModal.style.display = 'flex');
@@ -228,8 +227,8 @@
     }
 
     events.sort((a, b) => {
-      const dateA = a.Data.split('/').reverse().join('-');
-      const dateB = b.Data.split('/').reverse().join('-');
+      const dateA = a.Data.split('/').reverse().join('/');
+      const dateB = b.Data.split('/').reverse().join('/');
       return new Date(dateA) - new Date(dateB);
     });
 
@@ -270,7 +269,7 @@
         alert('Evento concluído com sucesso!');
         loadEvents();
       } else {
-        alert('Erro ao concluir evento.');
+        alert('Erro ao concluir evento: ' + (result.message || 'Erro desconhecido.'));
       }
     } catch (error) {
       console.error('Erro ao concluir evento:', error);
@@ -311,10 +310,11 @@
         form.reset();
         loadEvents();
       } else {
+        console.error('Erro ao adicionar evento:', result.message || result);
         alert('Erro ao adicionar evento.');
       }
     } catch (error) {
-      console.error('Erro ao adicionar evento:', error);
+      console.error('Erro ao enviar evento:', error);
       alert('Erro ao adicionar evento.');
     }
   });
