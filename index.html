@@ -5,67 +5,224 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tramontin Dashboard</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Aqui vai o CSS do Dashboard (já mando na próxima mensagem) */
+    :root {
+      --primary: #6366f1;
+      --secondary: #4f46e5;
+      --text-dark: #1e293b;
+      --text-light: #f1f5f9;
+      --bg-light: #f8fafc;
+      --bg-dark: #0f172a;
+      --card-light: rgba(255, 255, 255, 0.7);
+      --card-dark: rgba(30, 41, 59, 0.7);
+      --transition: all 0.4s ease;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #c3cfe2, #e2ebf0);
+      min-height: 100vh;
+      color: var(--text-dark);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.8em;
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .btn-top {
+      margin-top: 10px;
+      background: #4f46e5;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: var(--transition);
+    }
+
+    .btn-top:hover {
+      background: #4338ca;
+      transform: scale(1.05);
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 30px;
+      flex-grow: 1;
+    }
+
+    .card {
+      backdrop-filter: blur(12px);
+      background: var(--card-light);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+    }
+
+    .material-icons {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      color: var(--primary);
+      transition: var(--transition);
+    }
+
+    .card:hover .material-icons {
+      color: var(--secondary);
+      transform: rotate(10deg) scale(1.2);
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 1.2em;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 0.9em;
+      color: #64748b;
+    }
+
+    .dark-mode body {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: var(--text-light);
+    }
+
+    .dark-mode .card {
+      background: var(--card-dark);
+      color: var(--text-light);
+    }
+
+    .theme-switcher {
+      margin-top: 15px;
+    }
+
+    .theme-btn {
+      background: white;
+      border: 2px solid var(--primary);
+      padding: 8px 18px;
+      border-radius: 20px;
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .theme-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+    }
   </style>
 </head>
+
 <body>
 
-  <h1 style="text-align: center;">Tramontin Dashboard</h1>
-
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; padding: 20px;">
-
-    <a href="agenda-pessoal.html" style="background:#f0f0f0; padding:20px; border-radius:10px; text-align:center; text-decoration:none; color:#333;">
-      <span class="material-icons" style="font-size:40px;">event</span><br>
-      Agenda Pessoal
-    </a>
-
-    <a href="lista-de-tarefas.html" style="background:#f0f0f0; padding:20px; border-radius:10px; text-align:center; text-decoration:none; color:#333;">
-      <span class="material-icons" style="font-size:40px;">checklist</span><br>
-      Lista de Tarefas
-    </a>
-
-    <a href="controle-financeiro.html" style="background:#f0f0f0; padding:20px; border-radius:10px; text-align:center; text-decoration:none; color:#333;">
-      <span class="material-icons" style="font-size:40px;">account_balance_wallet</span><br>
-      Controle Financeiro
-    </a>
-
-    <a href="lollapalupulo.html" style="background:#f0f0f0; padding:20px; border-radius:10px; text-align:center; text-decoration:none; color:#333;">
-      <span class="material-icons" style="font-size:40px;">sports_bar</span><br>
-      Lollapalúpulo
-    </a>
-
-    <a href="confraria.html" style="background:#f0f0f0; padding:20px; border-radius:10px; text-align:center; text-decoration:none; color:#333;">
-      <span class="material-icons" style="font-size:40px;">groups</span><br>
-      Confraria
-    </a>
-
-    <a href="shows-e-eventos.html" style="background:#f0f0f0; padding:20px; border-radius:10px; text-align:center; text-decoration:none; color:#333;">
-      <span class="material-icons" style="font-size:40px;">music_note</span><br>
-      Shows e Eventos
-    </a>
-
-    <a href="lista-de-compras.html" style="background:#f0f0f0; padding:20px; border-radius:10px; text-align:center; text-decoration:none; color:#333;">
-      <span class="material-icons" style="font-size:40px;">shopping_cart</span><br>
-      Lista de Compras
-    </a>
-
-    <a href="metas-e-habitos.html" style="background:#f0f0f0; padding:20px; border-radius:10px; text-align:center; text-decoration:none; color:#333;">
-      <span class="material-icons" style="font-size:40px;">track_changes</span><br>
-      Metas e Hábitos
-    </a>
-
-    <a href="banco-do-brasil.html" style="background:#f0f0f0; padding:20px; border-radius:10px; text-align:center; text-decoration:none; color:#333;">
-      <span class="material-icons" style="font-size:40px;">work</span><br>
-      Banco do Brasil
-    </a>
-
-    <a href="aniversarios.html" style="background:#f0f0f0; padding:20px; border-radius:10px; text-align:center; text-decoration:none; color:#333;">
-      <span class="material-icons" style="font-size:40px;">cake</span><br>
-      Aniversários
-    </a>
-
+<header>
+  Tramontin Dashboard
+  <div class="theme-switcher">
+    <button class="theme-btn" onclick="toggleTheme()">Modo Claro/Escuro</button>
   </div>
+</header>
+
+<div class="dashboard">
+  <a href="agenda-pessoal.html" class="card">
+    <div class="material-icons">event</div>
+    <div class="card-title">Agenda Pessoal</div>
+    <div class="card-desc">Seus compromissos</div>
+  </a>
+
+  <a href="lista-de-tarefas.html" class="card">
+    <div class="material-icons">check_circle</div>
+    <div class="card-title">Lista de Tarefas</div>
+    <div class="card-desc">Organize suas tarefas</div>
+  </a>
+
+  <a href="controle-financeiro.html" class="card">
+    <div class="material-icons">account_balance_wallet</div>
+    <div class="card-title">Controle Financeiro</div>
+    <div class="card-desc">Gerencie seu dinheiro</div>
+  </a>
+
+  <a href="lollapalupulo.html" class="card">
+    <div class="material-icons">sports_bar</div>
+    <div class="card-title">Lollapalúpulo</div>
+    <div class="card-desc">Organização do evento</div>
+  </a>
+
+  <a href="confraria.html" class="card">
+    <div class="material-icons">groups</div>
+    <div class="card-title">Confraria</div>
+    <div class="card-desc">Encontros especiais</div>
+  </a>
+
+  <a href="shows-e-eventos.html" class="card">
+    <div class="material-icons">music_note</div>
+    <div class="card-title">Shows e Eventos</div>
+    <div class="card-desc">Diversão garantida</div>
+  </a>
+
+  <a href="lista-de-compras.html" class="card">
+    <div class="material-icons">shopping_cart</div>
+    <div class="card-title">Lista de Compras</div>
+    <div class="card-desc">Suas compras organizadas</div>
+  </a>
+
+  <a href="metas-e-habitos.html" class="card">
+    <div class="material-icons">track_changes</div>
+    <div class="card-title">Metas e Hábitos</div>
+    <div class="card-desc">Acompanhe seu progresso</div>
+  </a>
+
+  <a href="banco-do-brasil.html" class="card">
+    <div class="material-icons">work</div>
+    <div class="card-title">Banco do Brasil</div>
+    <div class="card-desc">Área profissional</div>
+  </a>
+
+  <a href="aniversarios.html" class="card">
+    <div class="material-icons">cake</div>
+    <div class="card-title">Aniversários</div>
+    <div class="card-desc">Não perca datas especiais</div>
+  </a>
+</div>
+
+<script>
+  function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+  }
+</script>
 
 </body>
 </html>
