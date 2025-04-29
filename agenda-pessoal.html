@@ -25,10 +25,10 @@
       gap: 20px;
     }
     .card {
-      background: #fff;
+      background: #ffffff;
       padding: 20px;
       border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -61,12 +61,11 @@
       font-size: 0.8em;
       margin-top: 10px;
     }
-    .status.Pendente { background: #fde68a; color: #92400e; }
-    .status.Concluído { background: #bbf7d0; color: #166534; }
-    .status.Cancelado { background: #fecaca; color: #991b1b; }
+    .status.Aberta { background: #fde68a; color: #92400e; }
+    .status.Concluída { background: #bbf7d0; color: #166534; }
     .btn, #openModalBtn {
       display: block;
-      width: 200px;
+      width: 220px;
       margin: 20px auto;
       padding: 12px;
       text-align: center;
@@ -137,52 +136,47 @@
 
 <body>
 
-<h1>Agenda Pessoal.</h1>
+<h1>Agenda Pessoal - Tramontin</h1>
 
-<button id="openModalBtn">+ Novo Evento</button>
+<button id="openModalBtn">+ Nova Tarefa</button>
 
 <div id="eventModal">
   <div class="modal-content">
-    <h2 style="text-align:center; color:#4f46e5;">Adicionar Novo Evento</h2>
+    <h2 style="text-align:center; color:#4f46e5;">Adicionar Nova Tarefa</h2>
     <form id="eventForm">
-      <input type="text" id="titulo" placeholder="Título*" required>
-      <input type="text" id="data" placeholder="Data (DD/MM/AAAA)*" required>
-      <input type="time" id="hora" required>
-      <select id="categoria">
-        <option value="">Categoria</option>
-        <option value="Trabalho">Trabalho</option>
-        <option value="Saúde">Saúde</option>
-        <option value="Família">Família</option>
-        <option value="Eventos">Eventos</option>
-        <option value="Estudos">Estudos</option>
-        <option value="Viagens">Viagens</option>
-        <option value="Finanças">Finanças</option>
-        <option value="Confraria">Confraria</option>
-        <option value="Lollapalúpulo">Lollapalúpulo</option>
+      <input type="text" id="tarefa" placeholder="O que deve ser feito?" required>
+      <input type="text" id="prazo" placeholder="Prazo (DD/MM/AAAA)" required>
+      <select id="repetir">
+        <option value="">Repetir?</option>
+        <option value="Sem repetição">Sem repetição</option>
+        <option value="Diariamente">Diariamente</option>
+        <option value="Segunda a Sexta">Segunda a Sexta</option>
+        <option value="Semanalmente">Semanalmente</option>
+        <option value="Mensalmente">Mensalmente</option>
+        <option value="Anualmente">Anualmente</option>
       </select>
-      <select id="prioridade">
-        <option value="">Prioridade</option>
-        <option value="Alta">Alta</option>
-        <option value="Média">Média</option>
-        <option value="Baixa">Baixa</option>
+      <textarea id="observacoes" placeholder="Observações..."></textarea>
+      <select id="lista" required>
+        <option value="">Adicionar à lista</option>
+        <option value="PESSOAL">PESSOAL</option>
+        <option value="HÁBITOS">HÁBITOS</option>
+        <option value="LISTA DE COMPRAS">LISTA DE COMPRAS</option>
+        <option value="CONFRARIA">CONFRARIA</option>
+        <option value="LOLLAPALÚPULO">LOLLAPALÚPULO</option>
+        <option value="SHOWS/EVENTOS">SHOWS/EVENTOS</option>
+        <option value="CONTAS A PAGAR">CONTAS A PAGAR</option>
+        <option value="FILHO - DAVI">FILHO - DAVI</option>
+        <option value="FILHO - JOÃO">FILHO - JOÃO</option>
+        <option value="BANCO DO BRASIL">BANCO DO BRASIL</option>
+        <option value="ANIVERSÁRIOS">ANIVERSÁRIOS</option>
       </select>
-      <select id="status" required>
-        <option value="">Status*</option>
-        <option value="Pendente">Pendente</option>
-        <option value="Concluído">Concluído</option>
-        <option value="Cancelado">Cancelado</option>
-      </select>
-      <input type="text" id="local" placeholder="Local">
-      <textarea id="observacoes" placeholder="Observações"></textarea>
       <div style="text-align:center; margin-top:15px;">
-        <button type="submit">Salvar Evento</button>
+        <button type="submit">Salvar Tarefa</button>
         <button type="button" id="closeModalBtn">Cancelar</button>
       </div>
     </form>
   </div>
 </div>
-
-<a href="index.html" class="btn">⬅️ Voltar para o Dashboard</a>
 
 <div class="cards" id="cards"></div>
 
@@ -193,58 +187,51 @@
   const eventModal = document.getElementById('eventModal');
   const cardsContainer = document.getElementById('cards');
   const form = document.getElementById('eventForm');
-
-  const apiUrl = 'https://script.google.com/macros/s/AKfycbzJT6ynjtS3dOxeV8mMJfTAvHiLoAljgXD99DRqCv40XdxfBfHCgwh_x-c9bIXSNV0F/exec';
+  const apiUrl = 'https://script.google.com/macros/s/AKfycbyggAe6R7IBCjuSmhh4-uQd6RgerA6rydt8jspkSINGAxafelVso6BBxo991SgrPzSM/exec';
 
   openModalBtn.addEventListener('click', () => eventModal.style.display = 'flex');
   closeModalBtn.addEventListener('click', () => eventModal.style.display = 'none');
   window.addEventListener('click', (e) => { if (e.target === eventModal) eventModal.style.display = 'none'; });
 
-  flatpickr("#data", {
+  flatpickr("#prazo", {
     dateFormat: "d/m/Y",
     altInput: true,
     altFormat: "d/m/Y",
     locale: "pt"
   });
 
-  async function loadEvents() {
-    cardsContainer.innerHTML = '<p style="text-align:center;">Carregando eventos...</p>';
+  async function loadTasks() {
+    cardsContainer.innerHTML = '<p style="text-align:center;">Carregando tarefas...</p>';
     try {
       const response = await fetch(apiUrl);
-      const events = await response.json();
-      renderCards(events);
+      const tasks = await response.json();
+      renderCards(tasks);
     } catch (error) {
-      console.error('Erro ao carregar eventos:', error);
-      cardsContainer.innerHTML = '<p style="text-align:center; color:red;">Erro ao carregar eventos.</p>';
+      console.error('Erro ao carregar tarefas:', error);
+      cardsContainer.innerHTML = '<p style="text-align:center; color:red;">Erro ao carregar tarefas.</p>';
     }
   }
 
-  function renderCards(events) {
+  function renderCards(tasks) {
     cardsContainer.innerHTML = '';
-    if (events.length === 0) {
-      cardsContainer.innerHTML = '<p style="text-align:center;">Nenhum evento encontrado.</p>';
+    if (tasks.length === 0) {
+      cardsContainer.innerHTML = '<p style="text-align:center;">Nenhuma tarefa encontrada.</p>';
       return;
     }
 
-    events.sort((a, b) => {
-      const dateA = a.Data.split('/').reverse().join('/');
-      const dateB = b.Data.split('/').reverse().join('/');
-      return new Date(dateA) - new Date(dateB);
-    });
+    tasks.sort((a, b) => new Date(a.Prazo.split('/').reverse().join('/')) - new Date(b.Prazo.split('/').reverse().join('/')));
 
-    events.forEach(event => {
+    tasks.forEach(task => {
       const card = document.createElement('div');
       card.className = 'card';
       card.innerHTML = `
-        <h2>${event.Título}</h2>
-        <div class="info"><span class="material-icons">event</span> ${event.Data}</div>
-        <div class="info"><span class="material-icons">schedule</span> ${event.Hora}</div>
-        <div class="info"><span class="material-icons">category</span> ${event.Categoria || '-'}</div>
-        <div class="info"><span class="material-icons">priority_high</span> ${event.Prioridade || '-'}</div>
-        <div class="info"><span class="material-icons">location_on</span> ${event.Local || '-'}</div>
-        <div class="description">${event.Observações || 'Sem observações.'}</div>
-        <span class="status ${event.Status}">${event.Status}</span>
-        ${event.Status === 'Pendente' ? `<button class="conclude-btn" data-id="${event.ID}">✔️ Concluir</button>` : ''}
+        <h2>${task.Tarefa}</h2>
+        <div class="info"><span class="material-icons">event</span> ${task.Prazo}</div>
+        <div class="info"><span class="material-icons">repeat</span> ${task.Repetir || '-'}</div>
+        <div class="info"><span class="material-icons">notes</span> ${task.Observações || '-'}</div>
+        <div class="info"><span class="material-icons">list</span> ${task.Lista}</div>
+        <span class="status ${task.Status}">${task.Status}</span>
+        ${task.Status === 'Aberta' ? `<button class="conclude-btn" data-id="${task.ID}">✔️ Concluir</button>` : ''}
       `;
       cardsContainer.appendChild(card);
     });
@@ -252,74 +239,58 @@
     document.querySelectorAll('.conclude-btn').forEach(button => {
       button.addEventListener('click', async () => {
         const id = button.getAttribute('data-id');
-        await concludeEvent(id);
+        await concludeTask(id);
       });
     });
   }
 
-  async function concludeEvent(id) {
+  async function concludeTask(id) {
     try {
-      const response = await fetch(apiUrl, {
+      await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: id, status: 'Concluído', method: 'put' })
+        body: JSON.stringify({ id: id, status: 'Concluída', method: 'put' })
       });
-      const result = await response.json();
-      if (result.result === "Success") {
-        alert('Evento concluído com sucesso!');
-        loadEvents();
-      } else {
-        alert('Erro ao concluir evento: ' + (result.message || 'Erro desconhecido.'));
-      }
+      alert('Tarefa concluída com sucesso!');
+      loadTasks();
     } catch (error) {
-      console.error('Erro ao concluir evento:', error);
-      alert('Erro ao concluir evento.');
+      console.error('Erro ao concluir tarefa:', error);
+      alert('Erro ao concluir tarefa.');
     }
   }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = {
-      titulo: document.getElementById('titulo').value.trim(),
-      descricao: "",
-      data: document.getElementById('data').value.trim(),
-      hora: document.getElementById('hora').value.trim(),
-      categoria: document.getElementById('categoria').value.trim(),
-      prioridade: document.getElementById('prioridade').value.trim(),
-      status: document.getElementById('status').value.trim(),
-      local: document.getElementById('local').value.trim(),
-      observacoes: document.getElementById('observacoes').value.trim()
+      tarefa: document.getElementById('tarefa').value.trim(),
+      prazo: document.getElementById('prazo').value.trim(),
+      repetir: document.getElementById('repetir').value.trim(),
+      observacoes: document.getElementById('observacoes').value.trim(),
+      lista: document.getElementById('lista').value.trim()
     };
 
-    if (!data.titulo || !data.data || !data.hora || !data.status) {
+    if (!data.tarefa || !data.prazo || !data.lista) {
       alert("Por favor, preencha os campos obrigatórios.");
       return;
     }
 
     try {
-      const response = await fetch(apiUrl, {
+      await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      const result = await response.json();
-
-      if (result.result === "Success") {
-        alert('Evento adicionado com sucesso! ✅');
-        eventModal.style.display = 'none';
-        form.reset();
-        loadEvents();
-      } else {
-        console.error('Erro ao adicionar evento:', result.message || result);
-        alert('Erro ao adicionar evento.');
-      }
+      alert('Tarefa adicionada com sucesso! ✅');
+      eventModal.style.display = 'none';
+      form.reset();
+      loadTasks();
     } catch (error) {
-      console.error('Erro ao enviar evento:', error);
-      alert('Erro ao adicionar evento.');
+      console.error('Erro ao adicionar tarefa:', error);
+      alert('Erro ao adicionar tarefa.');
     }
   });
 
-  loadEvents();
+  loadTasks();
 </script>
 
 </body>
