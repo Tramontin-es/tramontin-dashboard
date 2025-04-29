@@ -19,6 +19,50 @@
       color: #4f46e5;
       margin-bottom: 20px;
     }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: 0.3s;
+    }
+    .card h2 {
+      font-size: 1.3em;
+      margin-bottom: 10px;
+    }
+    .info {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.9em;
+      margin-bottom: 8px;
+    }
+    .material-icons {
+      font-size: 1em;
+      color: #6366f1;
+    }
+    .description {
+      font-size: 0.9em;
+      margin: 10px 0;
+      color: #555;
+    }
+    .status {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 0.8em;
+      margin-top: 10px;
+    }
+    .status.Aberta { background: #fde68a; color: #92400e; }
+    .status.Concluída { background: #bbf7d0; color: #166534; }
     .btn, #openModalBtn {
       display: block;
       width: 200px;
@@ -41,7 +85,6 @@
       background: rgba(0,0,0,0.5);
       justify-content: center;
       align-items: center;
-      z-index: 10;
     }
     #eventModal .modal-content {
       background: white;
@@ -75,80 +118,29 @@
       background: #f87171;
       color: white;
     }
-    .section-title {
-      margin: 30px 0 10px;
-      font-size: 1.5em;
-      color: #4f46e5;
-      border-bottom: 2px solid #6366f1;
-      padding-bottom: 5px;
-    }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
+    .action-btn {
       margin-top: 10px;
-    }
-    .card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: 0.3s;
-      position: relative;
+      gap: 10px;
+      justify-content: center;
     }
-    .card h2 {
-      font-size: 1.2em;
-      margin-bottom: 10px;
-    }
-    .info {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.9em;
-      margin-bottom: 8px;
-    }
-    .material-icons {
-      font-size: 1em;
-      color: #6366f1;
-    }
-    .description {
-      font-size: 0.9em;
-      margin: 10px 0;
-      color: #555;
-    }
-    .status {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 8px;
-      font-size: 0.8em;
-      margin-top: 10px;
-    }
-    .status.Aberta { background: #fde68a; color: #92400e; }
-    .status.Concluída { background: #bbf7d0; color: #166534; }
-    .btn-small {
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 0.85em;
-      margin-top: 10px;
-      cursor: pointer;
-      border: none;
-    }
-    .btn-concluir {
+    .action-btn button {
       background: #10b981;
       color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
     }
-    .btn-apagar {
-      background: #ef4444;
-      color: white;
+    .action-btn button.delete {
+      background: #f43f5e;
     }
   </style>
 </head>
+
 <body>
 
-<h1>Agenda Pessoal Tramontin</h1>
+<h1>Agenda Pessoal</h1>
 
 <button id="openModalBtn">+ Nova Tarefa</button>
 
@@ -157,33 +149,30 @@
     <h2 style="text-align:center; color:#4f46e5;">Adicionar Nova Tarefa</h2>
     <form id="eventForm">
       <input type="text" id="titulo" placeholder="O que deve ser feito?" required>
-      <input type="text" id="data" placeholder="Prazo (DD/MM/AAAA)" required>
-      <input type="time" id="hora" placeholder="Hora" required>
+      <input type="text" id="prazo" placeholder="Prazo (DD/MM/AAAA)" required>
+      <input type="time" id="hora" required>
       <select id="repeticao">
         <option value="">Repetir?</option>
-        <option value="Não repetir">Não repetir</option>
-        <option value="Todo dia">Todo dia</option>
-        <option value="Todo dia (Seg-Sex)">Todo dia (Seg-Sex)</option>
-        <option value="Toda semana">Toda semana</option>
-        <option value="Todo mês">Todo mês</option>
-        <option value="Todo ano">Todo ano</option>
-        <option value="Outro">Outro...</option>
+        <option value="Diariamente">Uma vez por dia</option>
+        <option value="Semanalmente">Uma vez por semana</option>
+        <option value="Mensalmente">Uma vez por mês</option>
+        <option value="Anualmente">Uma vez por ano</option>
       </select>
-      <input type="text" id="lista" list="listas" placeholder="Adicionar à lista..." required>
-      <datalist id="listas">
-        <option value="PESSOAL">
-        <option value="HÁBITOS">
-        <option value="LISTA DE COMPRAS">
-        <option value="CONFRARIA">
-        <option value="LOLLAPALÚPULO">
-        <option value="SHOWS/EVENTOS">
-        <option value="CONTAS A PAGAR">
-        <option value="FILHO - DAVI">
-        <option value="FILHO - JOÃO">
-        <option value="BANCO DO BRASIL">
-        <option value="ANIVERSÁRIOS">
-      </datalist>
-      <textarea id="observacoes" placeholder="Observações..."></textarea>
+      <textarea id="observacoes" placeholder="Observações"></textarea>
+      <select id="lista" required>
+        <option value="">Adicionar à lista</option>
+        <option value="Pessoal">Pessoal</option>
+        <option value="Hábitos">Hábitos</option>
+        <option value="Lista de Compras">Lista de Compras</option>
+        <option value="Confraria">Confraria</option>
+        <option value="Lollapalúpulo">Lollapalúpulo</option>
+        <option value="Shows/Eventos">Shows/Eventos</option>
+        <option value="Contas a Pagar">Contas a Pagar</option>
+        <option value="Filho - Davi">Filho - Davi</option>
+        <option value="Filho - João">Filho - João</option>
+        <option value="Banco do Brasil">Banco do Brasil</option>
+        <option value="Aniversários">Aniversários</option>
+      </select>
       <div style="text-align:center; margin-top:15px;">
         <button type="submit">Salvar Tarefa</button>
         <button type="button" id="closeModalBtn">Cancelar</button>
@@ -191,46 +180,117 @@
     </form>
   </div>
 </div>
+
 <a href="index.html" class="btn">⬅️ Voltar para o Dashboard</a>
 
-<h2 class="section-title">📋 Tarefas Abertas</h2>
-<div class="cards" id="tarefasAbertas"></div>
-
-<h2 class="section-title">✅ Tarefas Concluídas</h2>
-<div class="cards" id="tarefasConcluidas"></div>
+<div class="cards" id="cards"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
   const openModalBtn = document.getElementById('openModalBtn');
   const closeModalBtn = document.getElementById('closeModalBtn');
   const eventModal = document.getElementById('eventModal');
+  const cardsContainer = document.getElementById('cards');
   const form = document.getElementById('eventForm');
-  const tarefasAbertas = document.getElementById('tarefasAbertas');
-  const tarefasConcluidas = document.getElementById('tarefasConcluidas');
 
-  const apiUrl = 'https://script.google.com/macros/s/AKfycbyggAe6R7IBCjuSmhh4-uQd6RgerA6rydt8jspkSINGAxafelVso6BBxo991SgrPzSM/exec';
+  const apiUrl = 'https://script.google.com/macros/s/AKfycbzg3Mi6gxul1qZ3AQJHrF8Nsz62ehr-OF_olXWOnS9b8sq4gYU-sC9OpLm5uW95SjkM/exec';
 
   openModalBtn.addEventListener('click', () => eventModal.style.display = 'flex');
   closeModalBtn.addEventListener('click', () => eventModal.style.display = 'none');
   window.addEventListener('click', (e) => { if (e.target === eventModal) eventModal.style.display = 'none'; });
 
-  flatpickr("#data", {
+  flatpickr("#prazo", {
     dateFormat: "d/m/Y",
     altInput: true,
     altFormat: "d/m/Y",
     locale: "pt"
   });
 
+  async function loadTasks() {
+    cardsContainer.innerHTML = '<p style="text-align:center;">Carregando tarefas...</p>';
+    try {
+      const response = await fetch(apiUrl);
+      const tasks = await response.json();
+      renderCards(tasks);
+    } catch (error) {
+      console.error('Erro ao carregar tarefas:', error);
+      cardsContainer.innerHTML = '<p style="text-align:center; color:red;">Erro ao carregar tarefas.</p>';
+    }
+  }
+
+  function renderCards(tasks) {
+    cardsContainer.innerHTML = '';
+    if (tasks.length === 0) {
+      cardsContainer.innerHTML = '<p style="text-align:center;">Nenhuma tarefa encontrada.</p>';
+      return;
+    }
+
+    tasks.sort((a, b) => {
+      const dateA = a.Prazo.split('/').reverse().join('/');
+      const dateB = b.Prazo.split('/').reverse().join('/');
+      return new Date(dateA) - new Date(dateB);
+    });
+
+    tasks.forEach(task => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h2>${task.Título}</h2>
+        <div class="info"><span class="material-icons">event</span> ${task.Prazo || '-'}</div>
+        <div class="info"><span class="material-icons">schedule</span> ${task.Hora || '-'}</div>
+        <div class="info"><span class="material-icons">repeat</span> ${task.Repetição || '-'}</div>
+        <div class="info"><span class="material-icons">list</span> ${task.Lista || '-'}</div>
+        <div class="description">${task.Observações || '-'}</div>
+        <span class="status ${task.Status}">${task.Status}</span>
+        <div class="action-btn">
+          <button onclick="concludeTask('${task.ID}')">✔️</button>
+          <button class="delete" onclick="deleteTask('${task.ID}')">🗑️</button>
+        </div>
+      `;
+      cardsContainer.appendChild(card);
+    });
+  }
+
+  async function concludeTask(id) {
+    try {
+      await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id, method: 'put' })
+      });
+      alert('Tarefa concluída!');
+      loadTasks();
+    } catch (error) {
+      console.error('Erro ao concluir tarefa:', error);
+      alert('Erro ao concluir tarefa.');
+    }
+  }
+
+  async function deleteTask(id) {
+    if (!confirm('Deseja realmente apagar esta tarefa?')) return;
+    try {
+      await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id, method: 'delete' })
+      });
+      alert('Tarefa apagada!');
+      loadTasks();
+    } catch (error) {
+      console.error('Erro ao apagar tarefa:', error);
+      alert('Erro ao apagar tarefa.');
+    }
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = {
       titulo: document.getElementById('titulo').value.trim(),
-      prazo: document.getElementById('data').value.trim(),
+      prazo: document.getElementById('prazo').value.trim(),
       hora: document.getElementById('hora').value.trim(),
       repeticao: document.getElementById('repeticao').value.trim(),
-      lista: document.getElementById('lista').value.trim(),
       observacoes: document.getElementById('observacoes').value.trim(),
-      status: "Aberta"
+      lista: document.getElementById('lista').value.trim(),
     };
 
     if (!data.titulo || !data.prazo || !data.hora || !data.lista) {
@@ -244,93 +304,15 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      alert('Tarefa adicionada com sucesso! ✅');
-      form.reset();
+      alert('Tarefa salva com sucesso!');
       eventModal.style.display = 'none';
+      form.reset();
       loadTasks();
     } catch (error) {
-      console.error('Erro ao adicionar tarefa:', error);
-      alert('Erro ao adicionar tarefa.');
+      console.error('Erro ao salvar tarefa:', error);
+      alert('Erro ao salvar tarefa.');
     }
   });
-
-  async function loadTasks() {
-    tarefasAbertas.innerHTML = 'Carregando...';
-    tarefasConcluidas.innerHTML = '';
-
-    try {
-      const response = await fetch(apiUrl);
-      const events = await response.json();
-
-      const abertas = events.filter(t => t.Status === "Aberta");
-      const concluidas = events.filter(t => t.Status === "Concluída");
-
-      renderTasks(abertas, tarefasAbertas, true);
-      renderTasks(concluidas, tarefasConcluidas, false);
-
-    } catch (error) {
-      console.error('Erro ao carregar tarefas:', error);
-      tarefasAbertas.innerHTML = '<p style="color:red;">Erro ao carregar tarefas.</p>';
-    }
-  }
-
-  function renderTasks(tasks, container, isAberta) {
-    container.innerHTML = '';
-    if (tasks.length === 0) {
-      container.innerHTML = '<p style="text-align:center;">Nenhuma tarefa encontrada.</p>';
-      return;
-    }
-
-    tasks.sort((a, b) => {
-      const d1 = new Date(a.Prazo.split('/').reverse().join('/'));
-      const d2 = new Date(b.Prazo.split('/').reverse().join('/'));
-      return d1 - d2;
-    });
-
-    tasks.forEach(task => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <h2>${task.Título}</h2>
-        <div class="info"><span class="material-icons">event</span> ${task.Prazo} - ${task.Hora}</div>
-        <div class="info"><span class="material-icons">category</span> ${task.Lista || '-'}</div>
-        <div class="description">${task.Observações || '-'}</div>
-        <span class="status ${task.Status}">${task.Status}</span>
-        ${isAberta 
-          ? `<button class="btn-small btn-concluir" onclick="concluirTarefa('${task.ID}')">✔️ Concluir</button>` 
-          : `<button class="btn-small btn-apagar" onclick="apagarTarefa('${task.ID}')">🗑️ Apagar</button>`}
-      `;
-      container.appendChild(card);
-    });
-  }
-
-  async function concluirTarefa(id) {
-    if (!confirm("Deseja concluir esta tarefa?")) return;
-    try {
-      await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, status: "Concluída", method: "put" })
-      });
-      loadTasks();
-    } catch (error) {
-      console.error('Erro ao concluir tarefa:', error);
-    }
-  }
-
-  async function apagarTarefa(id) {
-    if (!confirm("Deseja apagar esta tarefa?")) return;
-    try {
-      await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, method: "delete" })
-      });
-      loadTasks();
-    } catch (error) {
-      console.error('Erro ao apagar tarefa:', error);
-    }
-  }
 
   loadTasks();
 </script>
