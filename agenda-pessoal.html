@@ -253,12 +253,39 @@
       document.getElementById('modal').style.display = 'none';
     }
 
-    document.getElementById('taskForm').addEventListener('submit', (e) => {
+    document.getElementById('taskForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      alert('Visual salvo! (integração em breve)');
-      closeModal();
+
+      const dados = {
+        tarefa: document.getElementById('tarefa').value.trim(),
+        prazo: document.getElementById('prazo').value.trim(),
+        hora: document.getElementById('hora').value.trim(),
+        repetir: document.getElementById('repetir').value.trim(),
+        observacoes: document.getElementById('observacoes').value.trim(),
+        lista: document.getElementById('lista').value.trim()
+      };
+
+      try {
+        const resposta = await fetch("https://script.google.com/macros/s/AKfycbwiyBdyPYWpT_aqGuugvcYqh9cHieFFFY-vriKegRyEyGW07URzeh4j6SE6zzI1zU3Z/exec", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dados)
+        });
+
+        const resultado = await resposta.json();
+
+        if (resultado.status === "sucesso") {
+          alert("Tarefa adicionada com sucesso!");
+          closeModal();
+          document.getElementById("taskForm").reset();
+        } else {
+          alert("Erro ao salvar: " + (resultado.message || 'Erro desconhecido.'));
+        }
+      } catch (erro) {
+        console.error("Erro ao salvar tarefa:", erro);
+        alert("Erro ao salvar tarefa. Verifique sua conexão ou tente novamente.");
+      }
     });
   </script>
 </body>
 </html>
-
