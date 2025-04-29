@@ -19,53 +19,9 @@
       color: #4f46e5;
       margin-bottom: 20px;
     }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-    }
-    .card {
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: 0.3s;
-    }
-    .card h2 {
-      font-size: 1.3em;
-      margin-bottom: 10px;
-    }
-    .info {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.9em;
-      margin-bottom: 8px;
-    }
-    .material-icons {
-      font-size: 1em;
-      color: #6366f1;
-    }
-    .description {
-      font-size: 0.9em;
-      margin: 10px 0;
-      color: #555;
-    }
-    .status {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 8px;
-      font-size: 0.8em;
-      margin-top: 10px;
-    }
-    .status.Aberta { background: #fde68a; color: #92400e; }
-    .status.Concluída { background: #bbf7d0; color: #166534; }
     .btn, #openModalBtn {
       display: block;
-      width: 220px;
+      width: 200px;
       margin: 20px auto;
       padding: 12px;
       text-align: center;
@@ -85,6 +41,7 @@
       background: rgba(0,0,0,0.5);
       justify-content: center;
       align-items: center;
+      z-index: 10;
     }
     #eventModal .modal-content {
       background: white;
@@ -118,25 +75,80 @@
       background: #f87171;
       color: white;
     }
-    .conclude-btn {
+    .section-title {
+      margin: 30px 0 10px;
+      font-size: 1.5em;
+      color: #4f46e5;
+      border-bottom: 2px solid #6366f1;
+      padding-bottom: 5px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 10px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: 0.3s;
+      position: relative;
+    }
+    .card h2 {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+    .info {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.9em;
+      margin-bottom: 8px;
+    }
+    .material-icons {
+      font-size: 1em;
+      color: #6366f1;
+    }
+    .description {
+      font-size: 0.9em;
+      margin: 10px 0;
+      color: #555;
+    }
+    .status {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 0.8em;
+      margin-top: 10px;
+    }
+    .status.Aberta { background: #fde68a; color: #92400e; }
+    .status.Concluída { background: #bbf7d0; color: #166534; }
+    .btn-small {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.85em;
+      margin-top: 10px;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-concluir {
       background: #10b981;
       color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 6px 12px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: 0.3s;
     }
-    .conclude-btn:hover {
-      background: #059669;
+    .btn-apagar {
+      background: #ef4444;
+      color: white;
     }
   </style>
 </head>
-
 <body>
 
-<h1>Agenda Pessoal - Tramontin</h1>
+<h1>Agenda Pessoal Tramontin</h1>
 
 <button id="openModalBtn">+ Nova Tarefa</button>
 
@@ -144,32 +156,34 @@
   <div class="modal-content">
     <h2 style="text-align:center; color:#4f46e5;">Adicionar Nova Tarefa</h2>
     <form id="eventForm">
-      <input type="text" id="tarefa" placeholder="O que deve ser feito?" required>
-      <input type="text" id="prazo" placeholder="Prazo (DD/MM/AAAA)" required>
-      <select id="repetir">
+      <input type="text" id="titulo" placeholder="O que deve ser feito?" required>
+      <input type="text" id="data" placeholder="Prazo (DD/MM/AAAA)" required>
+      <input type="time" id="hora" placeholder="Hora" required>
+      <select id="repeticao">
         <option value="">Repetir?</option>
-        <option value="Sem repetição">Sem repetição</option>
-        <option value="Diariamente">Diariamente</option>
-        <option value="Segunda a Sexta">Segunda a Sexta</option>
-        <option value="Semanalmente">Semanalmente</option>
-        <option value="Mensalmente">Mensalmente</option>
-        <option value="Anualmente">Anualmente</option>
+        <option value="Não repetir">Não repetir</option>
+        <option value="Todo dia">Todo dia</option>
+        <option value="Todo dia (Seg-Sex)">Todo dia (Seg-Sex)</option>
+        <option value="Toda semana">Toda semana</option>
+        <option value="Todo mês">Todo mês</option>
+        <option value="Todo ano">Todo ano</option>
+        <option value="Outro">Outro...</option>
       </select>
+      <input type="text" id="lista" list="listas" placeholder="Adicionar à lista..." required>
+      <datalist id="listas">
+        <option value="PESSOAL">
+        <option value="HÁBITOS">
+        <option value="LISTA DE COMPRAS">
+        <option value="CONFRARIA">
+        <option value="LOLLAPALÚPULO">
+        <option value="SHOWS/EVENTOS">
+        <option value="CONTAS A PAGAR">
+        <option value="FILHO - DAVI">
+        <option value="FILHO - JOÃO">
+        <option value="BANCO DO BRASIL">
+        <option value="ANIVERSÁRIOS">
+      </datalist>
       <textarea id="observacoes" placeholder="Observações..."></textarea>
-      <select id="lista" required>
-        <option value="">Adicionar à lista</option>
-        <option value="PESSOAL">PESSOAL</option>
-        <option value="HÁBITOS">HÁBITOS</option>
-        <option value="LISTA DE COMPRAS">LISTA DE COMPRAS</option>
-        <option value="CONFRARIA">CONFRARIA</option>
-        <option value="LOLLAPALÚPULO">LOLLAPALÚPULO</option>
-        <option value="SHOWS/EVENTOS">SHOWS/EVENTOS</option>
-        <option value="CONTAS A PAGAR">CONTAS A PAGAR</option>
-        <option value="FILHO - DAVI">FILHO - DAVI</option>
-        <option value="FILHO - JOÃO">FILHO - JOÃO</option>
-        <option value="BANCO DO BRASIL">BANCO DO BRASIL</option>
-        <option value="ANIVERSÁRIOS">ANIVERSÁRIOS</option>
-      </select>
       <div style="text-align:center; margin-top:15px;">
         <button type="submit">Salvar Tarefa</button>
         <button type="button" id="closeModalBtn">Cancelar</button>
@@ -177,100 +191,50 @@
     </form>
   </div>
 </div>
+<a href="index.html" class="btn">⬅️ Voltar para o Dashboard</a>
 
-<div class="cards" id="cards"></div>
+<h2 class="section-title">📋 Tarefas Abertas</h2>
+<div class="cards" id="tarefasAbertas"></div>
+
+<h2 class="section-title">✅ Tarefas Concluídas</h2>
+<div class="cards" id="tarefasConcluidas"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
   const openModalBtn = document.getElementById('openModalBtn');
   const closeModalBtn = document.getElementById('closeModalBtn');
   const eventModal = document.getElementById('eventModal');
-  const cardsContainer = document.getElementById('cards');
   const form = document.getElementById('eventForm');
+  const tarefasAbertas = document.getElementById('tarefasAbertas');
+  const tarefasConcluidas = document.getElementById('tarefasConcluidas');
+
   const apiUrl = 'https://script.google.com/macros/s/AKfycbyggAe6R7IBCjuSmhh4-uQd6RgerA6rydt8jspkSINGAxafelVso6BBxo991SgrPzSM/exec';
 
   openModalBtn.addEventListener('click', () => eventModal.style.display = 'flex');
   closeModalBtn.addEventListener('click', () => eventModal.style.display = 'none');
   window.addEventListener('click', (e) => { if (e.target === eventModal) eventModal.style.display = 'none'; });
 
-  flatpickr("#prazo", {
+  flatpickr("#data", {
     dateFormat: "d/m/Y",
     altInput: true,
     altFormat: "d/m/Y",
     locale: "pt"
   });
 
-  async function loadTasks() {
-    cardsContainer.innerHTML = '<p style="text-align:center;">Carregando tarefas...</p>';
-    try {
-      const response = await fetch(apiUrl);
-      const tasks = await response.json();
-      renderCards(tasks);
-    } catch (error) {
-      console.error('Erro ao carregar tarefas:', error);
-      cardsContainer.innerHTML = '<p style="text-align:center; color:red;">Erro ao carregar tarefas.</p>';
-    }
-  }
-
-  function renderCards(tasks) {
-    cardsContainer.innerHTML = '';
-    if (tasks.length === 0) {
-      cardsContainer.innerHTML = '<p style="text-align:center;">Nenhuma tarefa encontrada.</p>';
-      return;
-    }
-
-    tasks.sort((a, b) => new Date(a.Prazo.split('/').reverse().join('/')) - new Date(b.Prazo.split('/').reverse().join('/')));
-
-    tasks.forEach(task => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <h2>${task.Tarefa}</h2>
-        <div class="info"><span class="material-icons">event</span> ${task.Prazo}</div>
-        <div class="info"><span class="material-icons">repeat</span> ${task.Repetir || '-'}</div>
-        <div class="info"><span class="material-icons">notes</span> ${task.Observações || '-'}</div>
-        <div class="info"><span class="material-icons">list</span> ${task.Lista}</div>
-        <span class="status ${task.Status}">${task.Status}</span>
-        ${task.Status === 'Aberta' ? `<button class="conclude-btn" data-id="${task.ID}">✔️ Concluir</button>` : ''}
-      `;
-      cardsContainer.appendChild(card);
-    });
-
-    document.querySelectorAll('.conclude-btn').forEach(button => {
-      button.addEventListener('click', async () => {
-        const id = button.getAttribute('data-id');
-        await concludeTask(id);
-      });
-    });
-  }
-
-  async function concludeTask(id) {
-    try {
-      await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: id, status: 'Concluída', method: 'put' })
-      });
-      alert('Tarefa concluída com sucesso!');
-      loadTasks();
-    } catch (error) {
-      console.error('Erro ao concluir tarefa:', error);
-      alert('Erro ao concluir tarefa.');
-    }
-  }
-
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = {
-      tarefa: document.getElementById('tarefa').value.trim(),
-      prazo: document.getElementById('prazo').value.trim(),
-      repetir: document.getElementById('repetir').value.trim(),
+      titulo: document.getElementById('titulo').value.trim(),
+      prazo: document.getElementById('data').value.trim(),
+      hora: document.getElementById('hora').value.trim(),
+      repeticao: document.getElementById('repeticao').value.trim(),
+      lista: document.getElementById('lista').value.trim(),
       observacoes: document.getElementById('observacoes').value.trim(),
-      lista: document.getElementById('lista').value.trim()
+      status: "Aberta"
     };
 
-    if (!data.tarefa || !data.prazo || !data.lista) {
-      alert("Por favor, preencha os campos obrigatórios.");
+    if (!data.titulo || !data.prazo || !data.hora || !data.lista) {
+      alert("Por favor, preencha todos os campos obrigatórios.");
       return;
     }
 
@@ -281,14 +245,92 @@
         body: JSON.stringify(data)
       });
       alert('Tarefa adicionada com sucesso! ✅');
-      eventModal.style.display = 'none';
       form.reset();
+      eventModal.style.display = 'none';
       loadTasks();
     } catch (error) {
       console.error('Erro ao adicionar tarefa:', error);
       alert('Erro ao adicionar tarefa.');
     }
   });
+
+  async function loadTasks() {
+    tarefasAbertas.innerHTML = 'Carregando...';
+    tarefasConcluidas.innerHTML = '';
+
+    try {
+      const response = await fetch(apiUrl);
+      const events = await response.json();
+
+      const abertas = events.filter(t => t.Status === "Aberta");
+      const concluidas = events.filter(t => t.Status === "Concluída");
+
+      renderTasks(abertas, tarefasAbertas, true);
+      renderTasks(concluidas, tarefasConcluidas, false);
+
+    } catch (error) {
+      console.error('Erro ao carregar tarefas:', error);
+      tarefasAbertas.innerHTML = '<p style="color:red;">Erro ao carregar tarefas.</p>';
+    }
+  }
+
+  function renderTasks(tasks, container, isAberta) {
+    container.innerHTML = '';
+    if (tasks.length === 0) {
+      container.innerHTML = '<p style="text-align:center;">Nenhuma tarefa encontrada.</p>';
+      return;
+    }
+
+    tasks.sort((a, b) => {
+      const d1 = new Date(a.Prazo.split('/').reverse().join('/'));
+      const d2 = new Date(b.Prazo.split('/').reverse().join('/'));
+      return d1 - d2;
+    });
+
+    tasks.forEach(task => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h2>${task.Título}</h2>
+        <div class="info"><span class="material-icons">event</span> ${task.Prazo} - ${task.Hora}</div>
+        <div class="info"><span class="material-icons">category</span> ${task.Lista || '-'}</div>
+        <div class="description">${task.Observações || '-'}</div>
+        <span class="status ${task.Status}">${task.Status}</span>
+        ${isAberta 
+          ? `<button class="btn-small btn-concluir" onclick="concluirTarefa('${task.ID}')">✔️ Concluir</button>` 
+          : `<button class="btn-small btn-apagar" onclick="apagarTarefa('${task.ID}')">🗑️ Apagar</button>`}
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  async function concluirTarefa(id) {
+    if (!confirm("Deseja concluir esta tarefa?")) return;
+    try {
+      await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: "Concluída", method: "put" })
+      });
+      loadTasks();
+    } catch (error) {
+      console.error('Erro ao concluir tarefa:', error);
+    }
+  }
+
+  async function apagarTarefa(id) {
+    if (!confirm("Deseja apagar esta tarefa?")) return;
+    try {
+      await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, method: "delete" })
+      });
+      loadTasks();
+    } catch (error) {
+      console.error('Erro ao apagar tarefa:', error);
+    }
+  }
 
   loadTasks();
 </script>
