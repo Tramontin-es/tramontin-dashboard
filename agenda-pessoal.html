@@ -38,11 +38,26 @@
       color: white;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
     header h1 {
       margin: 0;
       font-size: 1.5rem;
+    }
+
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filters select {
+      padding: 0.5rem;
+      border-radius: var(--radius);
+      border: 1px solid #ccc;
+      font-size: 1rem;
     }
 
     .add-btn {
@@ -160,14 +175,33 @@
 <body>
   <header>
     <h1>Agenda Pessoal</h1>
+    <div class="filters">
+      <select id="filtroLista">
+        <option value="">Todas as Listas</option>
+        <option>PESSOAL</option>
+        <option>HÁBITOS</option>
+        <option>LISTA DE COMPRAS</option>
+        <option>CONFRARIA</option>
+        <option>LOLLAPALÚPULO</option>
+        <option>SHOWS/EVENTOS</option>
+        <option>CONTAS A PAGAR</option>
+        <option>FILHO - DAVI</option>
+        <option>FILHO - JOÃO</option>
+        <option>BANCO DO BRASIL</option>
+        <option>ANIVERSÁRIOS</option>
+      </select>
+      <select id="filtroStatus">
+        <option value="">Todos os Status</option>
+        <option>Pendente</option>
+        <option>Concluído</option>
+      </select>
+    </div>
     <button class="add-btn" onclick="openModal()">Nova Tarefa</button>
   </header>
 
   <section class="agenda-grid" id="agenda"></section>
-
   <button class="floating-btn" onclick="openModal()">+</button>
 
-  <!-- Modal -->
   <div id="modal">
     <div class="modal-content">
       <h2>Adicionar Tarefa</h2>
@@ -221,7 +255,7 @@
 
     document.getElementById('taskForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      alert('Visual salvo! (em breve integrará com a planilha)');
+      alert('Visual salvo! (integração em breve)');
       closeModal();
     });
   </script>
