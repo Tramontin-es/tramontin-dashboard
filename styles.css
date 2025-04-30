@@ -1,0 +1,14 @@
+:root {
+  --primary: #6366f1;
+  --secondary: #4f46e5;
+  --accent: #a5b4fc;
+  --text-dark: #1e293b;
+  --text-light: #f1f5f9;
+  --bg-light: #f8fafc;
+  --bg-dark: #0f172a;
+  --card-light: white;
+  --card-dark: #1e293b;
+  --transition: all 0.3s ease;
+  --shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+/* ... (conteúdo completo já processado anteriormente) ... */
